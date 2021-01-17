@@ -1,47 +1,44 @@
-x=0
-y=0
+arr = File.read('./input.txt').split("\n")
 
-degree=0
+x = 0
+y = 0
 
-File.foreach('./input.txt') do |line|
-#   puts line
+degree = 0
+
+arr.each do |line|
+  #   puts line
   type = line[0]
   num = line[1..line.length].to_i
-  
+
   if type == 'N'
-    y+=num
+    y += num
   elsif type == 'S'
-    y-=num
+    y -= num
   elsif type == 'E'
-    x+=num
+    x += num
   elsif type == 'W'
-    x-=num
+    x -= num
   elsif type == 'L'
-    degree+=num
+    degree += num
   elsif type == 'R'
-    degree-=num
+    degree -= num
   elsif type == 'F'
-    direction = (degree/90)%4
+    direction = (degree / 90) % 4
     if direction == 0
-      x+=num
+      x += num
     elsif direction == 1
-      y+=num
+      y += num
     elsif direction == 2
-      x-=num
+      x -= num
     elsif direction == 3
-      y-=num
+      y -= num
     else
       puts 'interesting'
     end
   else
     puts 'also intersting'
   end
-    
-  # puts type  #
-  # puts num
 end
 
-puts 'x:', x
-puts 'y:', y 
-
-puts 'ans:', x.abs + y.abs
+puts "x: #{x} y: #{y}"
+puts "ans: #{x.abs + y.abs}"

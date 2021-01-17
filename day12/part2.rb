@@ -1,75 +1,74 @@
-# waypoint
-$wx=10
-$wy=1
+arr = File.read('./input.txt').split("\n")
 
-# ship
-$sx=0
-$sy=0
+# puts arr.inspect
 
+wx = 10
+wy = 1
 
-def rotate(action, num)
-  order = ['++','-+','--','+-']
-  
+sx = 0
+sy = 0
+
+def rotate(action, num, wx, wy)
+  order = ['++', '-+', '--', '+-']
+
   if num == 180
-    $wx = -$wx
-    $wy = -$wy
+    wx = -wx
+    wy = -wy
   elsif num == 90
-    x = $wx >= 0 ? '+' : '-'
-    y = $wy >= 0 ? '+' : '-'
-    
-    i = order.index(x+y)
+    x = wx >= 0 ? '+' : '-'
+    y = wy >= 0 ? '+' : '-'
+
+    i = order.index(x + y)
     case action
     when 'L'
-      str = order[(i+1)%4]
+      str = order[(i + 1) % 4]
     when 'R'
-      str = order[(i-1)%4]
+      str = order[(i - 1) % 4]
     end
 
-    twx = (str[0]+$wy.abs.to_s).to_i
-    twy = (str[1]+$wx.abs.to_s).to_i
-    
-    $wx = twx
-    $wy = twy
+    twx = (str[0] + wy.abs.to_s).to_i
+    twy = (str[1] + wx.abs.to_s).to_i
+
+    wx = twx
+    wy = twy
   elsif num == 270
-    rotate(action, 180)
-    rotate(action, 90)
+    wx, wy = rotate(action, 180, wx, wy)
+    wx, wy = rotate(action, 90, wx, wy)
   else
     puts "ops!, #{num}"
   end
+
+  [wx, wy]
 end
 
-def move(num)
-  $sx += $wx * num
-  $sy += $wy * num
+def move(num, wx, wy, sx, sy)
+  sx += wx * num
+  sy += wy * num
+
+  [sx, sy]
 end
 
-File.foreach('./input.txt') do |line|
-
+arr.each do |line|
   type = line[0]
   num = line[1..line.length].to_i
-  
+
   if type == 'N'
-    $wy+=num
+    wy += num
   elsif type == 'S'
-    $wy-=num
+    wy -= num
   elsif type == 'E'
-    $wx+=num
+    wx += num
   elsif type == 'W'
-    $wx-=num
-  elsif type == 'L' || type == 'R'
-    rotate(type,num)
+    wx -= num
+  elsif %w[L R].include?(type)
+    wx, wy = rotate(type, num, wx, wy)
   elsif type == 'F'
-    move(num)
+    sx, sy = move(num, wx, wy, sx, sy)
   else
     puts 'also ops!'
   end
-    
-  # puts type  #
-  # puts num
 end
 
-puts '$wx:', $wx, '$wy:', $wy 
-
-puts '$sx:', $sx, '$sy:', $sy 
-
-puts 'ans:', $sx.abs + $sy .abs
+puts "wx: #{wx} wy: #{wy}"
+puts "sx: #{sx} sy: #{sy}"
+puts "ans: #{sx.abs + sy.abs}"
