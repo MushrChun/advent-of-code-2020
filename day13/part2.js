@@ -6,54 +6,33 @@ const txt = fs.readFileSync('./input.txt', 'utf8')
 const str = txt.split(`${os.EOL}`)[1]
 
 const arr = str.split(',').map(num => parseInt(num))
-console.log(arr)
 
-const maxNum = Math.max(...arr.filter(num => !isNaN(num)))
-console.log(maxNum)
+const list = [] // [[interval, offset] ...]
 
-let maxOffset
-
-const list = [] // [[num, offset] ...]
-
-// set offset matrix and find out maxOffset
+// set offset matrix
 for ([index, num] of arr.entries()) {
     if (!isNaN(num)) {
         list.push([num, index])
     }
-    if (num === maxNum) {
-        maxOffset = index
-    }
 }
 
 console.log(list)
-console.log(maxOffset)
 
+let time = list[0][0]
+let increase = list[0][0]
 
-
-for (let i = 0; i < list.length; i++) {
-    let [num, offset] = list[i]
-    const newOffset = offset - maxOffset
-    list[i] = [num, newOffset]
-}
-
-
-console.log(list)
-
-
-function check(time) {
-    for ([num, offset] of list) {
-        const r = (time + offset) % num
-        if (r !== 0) return false
+for (let i = 1; i < list.length; i++) {
+    const [interval, offset] = list[i]
+    while (true) {
+        const r = (time + offset) % interval
+        if (r !== 0) {
+            time += increase
+        } else {
+            break
+        }
     }
-    return true
+
+    increase *= interval
 }
 
-
-let time = 0
-while (true) {
-    if (check(time)) break
-    time += maxNum
-}
-
-
-console.log(time - maxOffset)
+console.log(time)
